@@ -1,0 +1,21 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: symfony
+    database_user: root
+    database_password: null
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: ThisTokenIsNotSoSecretChangeIt
+    experian.client_id                      : 17539
+    experian.consumer_key                   : MTc1Mzk6MTAwMjQ5
+    experian.consumer_secret                : cd91f919a5fd40b0b1c08d8f8eaac72c
+    experian.cust_id                        : 100249
+    experian.entity_id                      : 167
+    experian.url_token                      : https://api.ccmp.eu/services/authorization/oauth2/token
+    experian.url_email_campaign             : https://api.ccmp.eu/services2/api/EmailCampaign
