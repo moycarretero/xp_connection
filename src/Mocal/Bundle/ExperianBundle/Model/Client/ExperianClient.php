@@ -103,7 +103,8 @@ class ExperianClient
     public function buildPostAction($subject, $body)
     {
         $emailCampaign = array(
-            "CampName" => "Envio Urgente 5", // ¿Se puede repetir?
+            //"CampName" => "Envio Urgente 5", // ¿Se puede repetir?
+            "CampName" => $subject, // ¿Se puede repetir?
             "CustId" => $this->custId,
             "EntityId" => $this->entityId,
             "TypeId" => "REGULAR",
@@ -123,6 +124,21 @@ class ExperianClient
                 "carryOverToNextDayFlag" => "1",
                 "stopNightDeliveryFlag" => "0",
                 "ignoreConfirmationFlag" => "0",
+                /*
+                "sendSchedule" => array(
+                    "timeZone" => "W_Europe_Standard_Time",
+                    "dayFrequency" => array(
+                        "frequencyType" => "Daily"
+                    ),
+                    "timeFrequency" => array(
+                        "timeIntervalType" => "MutipleTimesADay",
+                        "MultipleTimesInterval" => array(
+                            "RunInterval" => "5",
+                            "RunIntervalUnit" => "minute"
+                        )
+                    )
+                ),
+                */
                 "sendSchedule" => array(
                     "timeZone" => "W_Europe_Standard_Time",
                     "dayFrequency" => array(
@@ -140,7 +156,8 @@ class ExperianClient
                 "SendingFlag" => "1"
             ),
             "Obj" => array(
-                "display_name" => "Envio_Urgente_5", // ¿Puede ser lo mismo que el subject?
+                //"display_name" => "Envio_Urgente_5", // ¿Puede ser lo mismo que el subject?
+                "display_name" => str_replace(" ", "_", $subject), // ¿Puede ser lo mismo que el subject?
                 "type_id" => "CampaignEmail",
                 "parent_obj_id" => "20174", // ¿De donde viene este numero?
                 "eligibility_status_id" => "READY"
@@ -151,13 +168,6 @@ class ExperianClient
                     "usageMask" => "ALL_EMAIL_STYLE_USAGE_MASK",
                     "body" => $body
                 )
-            ),
-            "CampMetaParams" => array(
-                array("optionId" => "4"),
-                array("optionId" => "5"),
-                array("optionId" => "8"),
-                array("optionId" => "9"),
-                array("optionId" => "10"),
             )
         );
 

@@ -6,6 +6,7 @@ use Mocal\Bundle\ExperianBundle\Model\Exception\ExperianManagerException;
 
 use Mocal\Bundle\ExperianBundle\Model\Client\ExperianClient;
 use Mocal\Bundle\ExperianBundle\Model\Client\Exception\ExperianClientException;
+use Mocal\Bundle\ExperianBundle\Entity\Newsletter;
 
 class ExperianManager
 {
@@ -18,90 +19,97 @@ class ExperianManager
         $this->logger = $logger;
     }
 
-    public function createNewsletter($subject, $body)
+    public function createNewsletter($data)
     {
-        $response = $this->create($subject, $body);
-        $campId = $response['campId'];
+        $newsletter = new Newsletter();
+        $newsletter->setSubject($data['subject']);
+        $newsletter->setBody($data['body']);
+        $this->create($newsletter);
 
-        $this->launch($campId);
+        $this->launch($newsletter->getClientId());
 
-        return $this->approve($campId);
+        return $this->approve($newsletter->getClientId());
     }
 
-    public function updateNewsletter($campId, $subject, $message)
+    public function updateNewsletter($data)
     {
+        $newsletter = new Newsletter();
+        $newsletter->setClientId($data['clientId']);
+        $newsletter->setSubject($data['subject']);
+        $newsletter->setBody($data['body']);
         $this->save($campId, $subject);
-        return $this->change($campId, $message);
+        return $this->change($newsletter);
     }
 
-    public function getNewsletter($campId)
+    public function getNewsletter($newsletterId)
     {
-        return $this->client->buildGetAction($campId);
+        return $this->client->buildGetAction($newsletterId);
     }
 
-    public function create($subject, $body)
+    public function create($newsletter)
     {
         try {
-            return $this->client->buildPostAction($subject, $body);
+            $response = $this->client->buildPostAction($newsletter->getSubject(), $newsletter->getBody());
+            $newsletter->setClientId($response['campId']);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function save($campId, $subject)
+    public function save($newsletter)
     {
         $emailCampaign = array(
             "emailMsgTemplate" => array(
-                "campId" => $campId,
-                "subject" => $subject
+                "campId" => $newsletter->getClientId(),
+                "subject" => $newsletter->getSubject()
              )
         );
 
         try {
-            return $this->client->buildPutAction("SAVE", $campId, $emailCampaign);
+            return $this->client->buildPutAction("SAVE", $newsletter->getClientId(), $emailCampaign);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function launch($campId)
+    public function launch($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("LAUNCH", $campId);
+            return $this->client->buildPutAction("LAUNCH", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function proof($campId)
+    public function proof($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("PROOF", $campId);
+            return $this->client->buildPutAction("PROOF", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function audit($campId)
+    public function audit($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("AUDIT", $campId);
+            return $this->client->buildPutAction("AUDIT", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function change($campId, $message)
+    public function change($newsletter)
     {
         $emailCampaign = array(
             "contBodies" => array(
                 array(
-                    "body"=> $message,
+                    "body"=> $newsletter->getBody(),
                     "campId"=> "7897",
                     "usageMask"=> "ALL_EMAIL_STYLE_USAGE_MASK",
                     "type"=> "HTML"
@@ -110,57 +118,57 @@ class ExperianManager
         );
 
         try {
-            return $this->client->buildPutAction("CHANGE", $campId, $emailCampaign);
+            return $this->client->buildPutAction("CHANGE", $newsletter->getClientId(), $emailCampaign);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function approve($campId)
+    public function approve($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("APPROVE", $campId);
+            return $this->client->buildPutAction("APPROVE", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function pause($campId)
+    public function pause($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("PAUSE", $campId);
+            return $this->client->buildPutAction("PAUSE", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function suspend($campId)
+    public function suspend($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("SUSPEND", $campId);
+            return $this->client->buildPutAction("SUSPEND", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function resume($campId)
+    public function resume($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("RESUME", $campId);
+            return $this->client->buildPutAction("RESUME", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
         }
     }
 
-    public function cancel($campId)
+    public function cancel($newsletterId)
     {
         try {
-            return $this->client->buildPutAction("CANCEL", $campId);
+            return $this->client->buildPutAction("CANCEL", $newsletterId);
         } catch (ExperianClientException $e) {
             $e->setMessage(__METHOD__." ".$e->getMessage());
             throw $e;
