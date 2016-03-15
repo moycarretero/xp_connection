@@ -36,6 +36,25 @@ class ExperianController extends Controller
     }
 
     /**
+     * @Route("/newsletter/{newsletterId}/update", name="updateNewsletter")
+     * @Method("GET")
+     */
+    public function updateNewsletter($newsletterId)
+    {
+        $subject = "Envio Ciclico 6";
+        $body = "<html><head><title></title></head><body>Esto es una alerta urgente 6</br></body></html>{[opt-out-tablaAPI|13502]}";
+
+        $request = $this->getRequest();
+        $experian = $this->get('mocal.experian.manager');
+
+        //$res = $experian->updateNewsletter(json_decode($request->getContent()));
+        $res = $experian->createNewsletter(array('clientId' => $newsletterId, 'subject' => $subject, 'body' => $body));
+
+        print_r($res);
+        die;
+    }
+
+    /**
      * @Route("/newsletter/{newsletterId}", name="getNewsletter")
      * @Method("GET")
      */
